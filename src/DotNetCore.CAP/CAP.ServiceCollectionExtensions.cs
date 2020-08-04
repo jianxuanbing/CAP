@@ -43,6 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddSingleton<MethodMatcherCache>();
 
             services.TryAddSingleton<IConsumerRegister, ConsumerRegister>();
+            services.TryAddSingleton<IDisposable, ConsumerRegister>();
 
             //Processors
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IProcessingServer, CapProcessingServer>());

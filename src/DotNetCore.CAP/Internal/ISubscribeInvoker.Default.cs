@@ -4,8 +4,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using AspectCore.DependencyInjection;
+using AspectCore.DynamicProxy;
 using DotNetCore.CAP.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
@@ -78,7 +81,11 @@ namespace DotNetCore.CAP.Internal
             object obj = null;
             if (srvType != null)
             {
-                obj = provider.GetServices(srvType).FirstOrDefault(o => o.GetType() == implType);
+                //obj = provider.GetServices(srvType).FirstOrDefault(o => o.GetType() == implType);
+                var instance = provider.GetService<IServiceResolver>().ResolveRequired(srvType);
+                var field = instance.GetType().GetTypeInfo().GetField("_implementation", BindingFlags.Instance | BindingFlags.NonPublic);
+                var targetInstance = field.GetValue(instance);
+                obj = targetInstance;
             }
 
             if (obj == null)
